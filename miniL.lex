@@ -11,7 +11,7 @@ void increaseLine();
 
 %}
 
-COMMENT			"##".*
+COMMENT			##.*
 DIGIT           [0-9]
 M_DIGIT         {DIGIT}+
 LETTER          [a-zA-Z]
@@ -39,7 +39,7 @@ IDENT           {M_LETTER}|{M_LETTER}({M_DIGIT}|{M_LETTER})*|{M_LETTER}({M_LETTE
 "while"         {increaseCol(); return WHILE;}
 "do"            {increaseCol(); return DO;}
 "beginloop"     {increaseCol(); return BEGINLOOP;}
-"endlooop"      {increaseCol(); return ENDLOOP;}
+"endloop"      {increaseCol(); return ENDLOOP;}
 "continue"      {increaseCol(); return CONTINUE;}
 "read"          {increaseCol(); return READ;}
 "write"         {increaseCol(); return WRITE;}
