@@ -74,7 +74,7 @@ IDENT           {M_LETTER}|{M_LETTER}({M_DIGIT}|{M_LETTER})*|{M_LETTER}({M_LETTE
 {COMMENT}		{increaseLine();}
 {IDENT}			{increaseCol(); yylval.str_val = yytext; return IDENT;}
 {M_DIGIT}		{increaseCol(); yylval.str_val = yytext; return NUMBER;}
-.               {printf("Error at line: %d , Col: %d \n", currLine, currCol); exit(1);}//error
+.               {printf("Error at line: %d , Col: %d \n", currLine, currCol);}//error
 %%
 
 
