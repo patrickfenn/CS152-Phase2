@@ -3,17 +3,25 @@
 
 #include <stdio.h>
 
+
 extern FILE * yyin;
 extern int currLine;
 extern int currCol;
 extern int yylex(void);
 void yyerror(const char *msg);
- 
+char* expected = "";
+char* e_list[100][100];
+
+int COUNT = 0;
+yerrork;
 %}
 
 %union{
 	char* str_val;
 }
+
+
+
 
 %error-verbose
 %start Program
@@ -71,8 +79,18 @@ void yyerror(const char *msg);
 %% 
 
 Program:
-   Functions {printf("Program -> Functions \n");}
+   Functions {
+       printf("Program -> Functions \n"); 
+        char temp[100];
+        sprintf(temp, "%s %s !!!\n", e_list[COUNT], expected);
+        strcpy(e_list[COUNT], temp);
+        int i;
+        for(i = 0; i <= COUNT; i++){
+            printf(e_list[i]);
+        }
+   }
    | {printf("Program -> Epsilon \n");}
+
    ;
 
 Functions:
@@ -82,20 +100,24 @@ Functions:
 
 Declaration_Semi:
     Declaration SEMICOLON {printf("Declaration_Semi -> Declaration SEMICOLON \n");}
+    | error Declaration_Semi {expected = "Declaration_semi";}
     ;
 
 Declarations_Semi:
     Declaration_Semi Declarations_Semi {printf("Declarations_Semi -> Declaration_Semi Declarations_Semi\n");}
     | {printf("Declarations_Semi -> Epsilon \n");}
+    | error Declarations_Semi {expected = "Declarations_Semi";}
     ;
 
 Statement_Semi:
     Statement SEMICOLON {printf("Statement_Semi -> Statement SEMICOLON \n");}
+    | error Statement_Semi {expected = "Statement_Semi";}
     ;
 
 Statments_Semi:
     Statement_Semi Statments_Semi {printf("Statments_Semi -> Statement_Semi Statement_Semi\n");}
     |  {printf("Statments_Semi -> Epsilon \n");}
+    | error Statments_Semi {expected = "Statements_Semi";}
     ;
 
 Function:
@@ -113,6 +135,7 @@ Declaration:
     Identifiers COLON ENUM L_PAREN Identifiers R_PAREN {printf("Declaration -> Identifiers COLON ENUM L_PAREN Identifiers R_PAREN\n");}
     | Identifiers COLON INTEGER {printf("Declaration -> Identifiers COLON INTEGER\n");}
     | Identifiers COLON ARRAY L_SQUARE_BRACKET Number R_SQUARE_BRACKET OF INTEGER {printf("Declaration -> Identifiers ARRAY L_SQUARE_BRACKET Number R_SQUARE_BRACKET OF INTEGER\n");}
+    | error ';' {expected = "Declaration";}
     ;
 
 Vars:
@@ -226,7 +249,15 @@ Number:
 
 
 void yyerror(const char *msg) {
-	printf("Error: Line: %s, Col: %s \n", currLine, currCol);
+	char e_string[100];
+    sprintf(e_string, "!!!Error: Line: %d, Col: %d, Symbol: %s, Expected: ", currLine, currCol, yychar);
+    strcpy(e_list[COUNT], e_string);
+    if(COUNT > 0){
+        char temp[100];
+        sprintf(temp, "%s %s !!!\n", e_list[COUNT-1], expected);
+        strcpy(e_list[COUNT-1], temp);
+    }
+    COUNT += 1;
 }
 
 int main(int argc, char ** argv) {
@@ -240,5 +271,6 @@ int main(int argc, char ** argv) {
 		yyin = stdin;
 	}
 	yyparse();
+    
 	return 1;
 }
