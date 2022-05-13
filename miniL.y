@@ -81,13 +81,7 @@ yerrork;
 Program:
    Functions {
        printf("Program -> Functions \n"); 
-        char temp[100];
-        sprintf(temp, "%s %s !!!\n", e_list[COUNT], expected);
-        strcpy(e_list[COUNT], temp);
-        int i;
-        for(i = 0; i <= COUNT; i++){
-            printf(e_list[i]);
-        }
+        
    }
    | {printf("Program -> Epsilon \n");}
 
@@ -271,6 +265,12 @@ int main(int argc, char ** argv) {
 		yyin = stdin;
 	}
 	yyparse();
-    
+    char temp[100];
+    sprintf(temp, "%s %s !!!\n", e_list[COUNT], expected);
+    strcpy(e_list[COUNT], temp);
+    int i;
+    for(i = 0; i <= COUNT; i++){
+        printf(e_list[i]);
+    }
 	return 1;
 }
