@@ -83,15 +83,15 @@ Program:
        printf("Program -> Functions \n"); 
         
    }
-   | {printf("Program -> Epsilon \n");}
    | error Program {expected = "Program";}
-
+   | {printf("Program -> Epsilon \n");}
+   
    ;
 
 Functions:
     Function Functions {printf("Functions -> Function Functions \n");}
-    |  {printf("Functions -> Epsilon \n");}
-    | error Functions {expected = "Functions";}
+    | error Functions {expected = "Functions";}|  {printf("Functions -> Epsilon \n");}
+    
     ;
 
 Declaration_Semi:
@@ -116,23 +116,28 @@ Statments_Semi:
     | error Statments_Semi {expected = "Statements_Semi";}
     ;
 
+FunctionA:
+    FUNCTION
+    | error FunctionA
+    ;
+
 Function:
-    FUNCTION Ident SEMICOLON BEGIN_PARAMS Declarations_Semi END_PARAMS
+    FunctionA IDENT SEMICOLON BEGIN_PARAMS Declarations_Semi END_PARAMS
     BEGIN_LOCALS Declarations_Semi END_LOCALS BEGIN_BODY Statments_Semi END_BODY 
     | error Function {expected = "Function";};
 
-Identifiers:
-    Ident COMMA Identifiers {printf("Identifiers -> Ident COMMA Identifiers \n");}
-    | Ident {printf("Identifiers -> Ident \n");}
-    |  {printf("Identifiers -> Epsilon \n");}
-    | error Identifiers {expected = "Identifiers";}
+IDENTifiers:
+    IDENT COMMA IDENTifiers {printf("IDENTifiers -> IDENT COMMA IDENTifiers \n");}
+    | IDENT {printf("IDENTifiers -> IDENT \n");}
+    |  {printf("IDENTifiers -> Epsilon \n");}
+    | error IDENTifiers {expected = "IDENTifiers";}
     ;
 
 Declaration:
-    Identifiers COLON ENUM L_PAREN Identifiers R_PAREN {printf("Declaration -> Identifiers COLON ENUM L_PAREN Identifiers R_PAREN\n");}
-    | Identifiers COLON INTEGER {printf("Declaration -> Identifiers COLON INTEGER\n");}
-    | Identifiers COLON ARRAY L_SQUARE_BRACKET Number R_SQUARE_BRACKET OF INTEGER {printf("Declaration -> Identifiers ARRAY L_SQUARE_BRACKET Number R_SQUARE_BRACKET OF INTEGER\n");}
-    | error ';' {expected = "Declaration";}
+    IDENTifiers COLON ENUM L_PAREN IDENTifiers R_PAREN {printf("Declaration -> IDENTifiers COLON ENUM L_PAREN IDENTifiers R_PAREN\n");}
+    | IDENTifiers COLON INTEGER {printf("Declaration -> IDENTifiers COLON INTEGER\n");}
+    | IDENTifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("Declaration -> IDENTifiers ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
+    | error Declaration {expected = "Declaration";}
     ;
 
 Vars:
@@ -234,28 +239,22 @@ Expressions:
 
 Term:
     SUB Var {printf("Term -> SUB Var \n");}
-    | SUB Number {printf("Term -> SUB Number \n");}
+    | SUB NUMBER {printf("Term -> SUB NUMBER \n");}
     | SUB L_PAREN Expression R_PAREN {printf("Term -> SUB L_PAREN Expression R_PAREN \n");}
     | Var {printf("Term -> Var \n");}
-    | Number {printf("Term -> Number \n");}
+    | NUMBER {printf("Term -> NUMBER \n");}
     | L_PAREN Expression R_PAREN {printf("Term -> L_PAREN Expression R_PAREN\n");}
-    | Ident L_PAREN Expressions R_PAREN {printf("Term -> Ident L_PAREN Expressions R_PAREN\n");}
+    | IDENT L_PAREN Expressions R_PAREN {printf("Term -> IDENT L_PAREN Expressions R_PAREN\n");}
     | error Term {expected = "Term";}
     ;
 
 Var:
-    Ident {printf("Var -> Ident \n");}
-    | Ident L_SQUARE_BRACKET Expression R_SQUARE_BRACKET {printf("Var  ->  Ident L_SQUARE_BRACKET Expression R_SQUARE_BRACKET\n");}
+    IDENT {printf("Var -> IDENT \n");}
+    | IDENT L_SQUARE_BRACKET Expression R_SQUARE_BRACKET {printf("Var  ->  IDENT L_SQUARE_BRACKET Expression R_SQUARE_BRACKET\n");}
     | error Var {expected = "Var";}
     ;
 
 
-Ident:
-    IDENT {printf("Ident-> IDENT %s \n",$1);}
-    ;
-
-Number:
-    NUMBER {printf("Number -> NUMBER %s \n", $1);}
     ;
 %% 
 
