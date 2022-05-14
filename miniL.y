@@ -79,19 +79,14 @@ yerrork;
 %% 
 
 Program:
-   Functions {
-       printf("Program -> Functions \n"); 
-        
-   }
-   | error Program {expected = "Program";}
+   Functions { printf("Program -> Functions \n"); }
    | {printf("Program -> Epsilon \n");}
-   
+   | error {expected = "Program";}
    ;
 
 Functions:
     Function Functions {printf("Functions -> Function Functions \n");}
     | error Functions {expected = "Functions";}|  {printf("Functions -> Epsilon \n");}
-    
     ;
 
 Declaration_Semi:
@@ -102,49 +97,46 @@ Declaration_Semi:
 Declarations_Semi:
     Declaration_Semi Declarations_Semi {printf("Declarations_Semi -> Declaration_Semi Declarations_Semi\n");}
     | {printf("Declarations_Semi -> Epsilon \n");}
-    | error Declarations_Semi {expected = "Declarations_Semi";}
+    | error ';' {expected = "Declarations_Semi";}
     ;
 
 Statement_Semi:
     Statement SEMICOLON {printf("Statement_Semi -> Statement SEMICOLON \n");}
-    | error Statement_Semi {expected = "Statement_Semi";}
+    | error ';' {expected = "Statement_Semi";}
     ;
 
 Statments_Semi:
     Statement_Semi Statments_Semi {printf("Statments_Semi -> Statement_Semi Statement_Semi\n");}
     |  {printf("Statments_Semi -> Epsilon \n");}
-    | error Statments_Semi {expected = "Statements_Semi";}
+    | error ';' {expected = "Statements_Semi";}
     ;
 
-FunctionA:
-    FUNCTION
-    | error FunctionA
-    ;
 
 Function:
-    FunctionA IDENT SEMICOLON BEGIN_PARAMS Declarations_Semi END_PARAMS
+    FUNCTION IDENT SEMICOLON BEGIN_PARAMS Declarations_Semi END_PARAMS
     BEGIN_LOCALS Declarations_Semi END_LOCALS BEGIN_BODY Statments_Semi END_BODY 
-    | error Function {expected = "Function";};
+    | error Function {expected = "Function";}
+    ;
 
-IDENTifiers:
-    IDENT COMMA IDENTifiers {printf("IDENTifiers -> IDENT COMMA IDENTifiers \n");}
-    | IDENT {printf("IDENTifiers -> IDENT \n");}
-    |  {printf("IDENTifiers -> Epsilon \n");}
-    | error IDENTifiers {expected = "IDENTifiers";}
+Identifiers:
+    IDENT COMMA Identifiers {printf("Identifiers -> IDENT COMMA Identifiers \n");}
+    | IDENT {printf("Identifiers -> IDENT \n");}
+    |  {printf("Identifiers -> Epsilon \n");}
+    | error ';' {expected = "Identifiers";}
     ;
 
 Declaration:
-    IDENTifiers COLON ENUM L_PAREN IDENTifiers R_PAREN {printf("Declaration -> IDENTifiers COLON ENUM L_PAREN IDENTifiers R_PAREN\n");}
-    | IDENTifiers COLON INTEGER {printf("Declaration -> IDENTifiers COLON INTEGER\n");}
-    | IDENTifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("Declaration -> IDENTifiers ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
-    | error Declaration {expected = "Declaration";}
+    Identifiers COLON ENUM L_PAREN Identifiers R_PAREN {printf("Declaration -> Identifiers COLON ENUM L_PAREN Identifiers R_PAREN\n");}
+    | Identifiers COLON INTEGER {printf("Declaration -> Identifiers COLON INTEGER\n");}
+    | Identifiers COLON ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {printf("Declaration -> Identifiers ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");}
+    | error ';' {expected = "Declaration";}
     ;
 
 Vars:
     Var Vars {printf("Vars -> Var Vars \n");}
     | COMMA Var Vars {printf("Vars -> COMMA Var Vars\n");}
     |  {printf("Vars -> Epsilon \n");}
-    | error Vars {expected = "Vars";}
+    | error ';' {expected = "Vars";}
     ;
 
 Statement:
@@ -157,29 +149,29 @@ Statement:
     | WRITE Vars {printf("Statement -> WRITE Vars\n");}
     | CONTINUE {printf("Statement -> CONTINUE\n");}
     | RETURN Expression {printf("Statement -> RETURN Expression\n");}
-    | error Statement {expected = "Statement";}
+    | error ';' {expected = "Statement";}
     ; 
 
 Relation-And-Exprs:
     OR Relation-And-Expr Relation-And-Exprs {printf("Relation-And-Exprs -> OR Relation-And-Expr Relation-And-Exprs \n");}
     | {printf("Relation-And-Exprs -> Epsilon \n");}
-    | error Relation-And-Exprs {expected = "Relation-And-Exprs";}
+    | error ';' {expected = "Relation-And-Exprs";}
     ;
 
 Bool-Expr:
     Relation-And-Expr Relation-And-Exprs {printf("Bool-Expr ->  Relation-And-Expr Relation-And-Exprs\n");}
-    | error Bool-Expr {expected = "Bool-Expr";}
+    | error ';' {expected = "Bool-Expr";}
     ;
 
 Relation-Exprs:
     AND Relation-Expr Relation-Exprs {printf("Relation-Exprs -> AND Relation-Expr Relation-Exprs\n");}
     | {printf("Relation-Exprs -> Epsilon \n");}
-    | error Relation-Exprs {expected = "Relation-Exprs";}
+    | error ';' {expected = "Relation-Exprs";}
     ;
 
 Relation-And-Expr:
     Relation-Expr Relation-Exprs {printf("Relation-And-Expr ->  Relation-Expr Relation-Exprs\n");}
-    | error Relation-And-Expr {expected = "Relation-And-Expr";}
+    | error ';' {expected = "Relation-And-Expr";}
     ;
 
 Relation-Expr:
@@ -191,7 +183,7 @@ Relation-Expr:
     | TRUE {printf("Relation-Expr -> TRUE\n");}
     | FALSE {printf("Relation-Expr -> FALSE\n");}
     | L_PAREN Bool-Expr R_PAREN {printf("Relation-Expr -> L_PAREN Bool-Expr R_PAREN\n");}
-    | error Relation-Expr {expected = "Relation-Expr";}
+    | error ';' {expected = "Relation-Expr";}
     ;
 
 Comp:
@@ -201,19 +193,19 @@ Comp:
     | GT {printf("Comp -> GT\n");}
     | LTE {printf("Comp -> LTE\n");}
     | GTE {printf("Comp -> GTE\n");}
-    | error Comp {expected = "Comp";}
+    | error ';' {expected = "Comp";}
     ;
 
 Multiplicative-Exprs:
     ADD Multiplicative-Expr Multiplicative-Exprs {printf("Multiplicative-Exprs -> ADD Multiplicative-Expr Multiplicative-Exprs\n");}
     | SUB Multiplicative-Expr Multiplicative-Exprs {printf("Multiplicative-Exprs -> SUB Multiplicative-Expr Multiplicative-Exprs\n");}
     |  {printf("Multiplicative-Exprs -> Epsilon \n");}
-    | error Multiplicative-Exprs {expected = "Multiplicative-Exprs";}
+    | error ';' {expected = "Multiplicative-Exprs";}
     ; 
 
 Expression:
     Multiplicative-Expr Multiplicative-Exprs {printf("Expression -> Multiplicative-Expr Multiplicative-Exprs \n");}
-    | error Expression {expected = "Expression";}
+    | error ';' {expected = "Expression";}
     ;
 
 Terms:
@@ -221,20 +213,20 @@ Terms:
     | DIV Term Terms {printf("Terms -> DIV Term Terms \n");}
     | MOD Term Terms {printf("Terms -> MOD Term Terms \n");}
     |  {printf("Terms -> Epsilon \n");}
-    | error Terms {expected = "Terms";}
+    | error ';' {expected = "Terms";}
     ;
 
 
 Multiplicative-Expr:
     Term Terms {printf("Multiplicative-Expr -> Term Terms \n");}
-    | error Multiplicative-Expr {expected = "Multiplicative-Expr";}
+    | error ';' {expected = "Multiplicative-Expr";}
     ;
 
 Expressions:
     Expression Expressions {printf("Expressions -> Expression Expressions\n");}
     | COMMA Expression Expressions {printf("Expressions -> COMMA Expression Expressions\n");}
     |  {printf("Expressions -> Epsilon \n");}
-    | error Expressions {expected = "Expressions";}
+    | error ';' {expected = "Expressions";}
     ;
 
 Term:
@@ -245,13 +237,13 @@ Term:
     | NUMBER {printf("Term -> NUMBER \n");}
     | L_PAREN Expression R_PAREN {printf("Term -> L_PAREN Expression R_PAREN\n");}
     | IDENT L_PAREN Expressions R_PAREN {printf("Term -> IDENT L_PAREN Expressions R_PAREN\n");}
-    | error Term {expected = "Term";}
+    | error ';' {expected = "Term";}
     ;
 
 Var:
     IDENT {printf("Var -> IDENT \n");}
     | IDENT L_SQUARE_BRACKET Expression R_SQUARE_BRACKET {printf("Var  ->  IDENT L_SQUARE_BRACKET Expression R_SQUARE_BRACKET\n");}
-    | error Var {expected = "Var";}
+    | error ';' {expected = "Var";}
     ;
 
 
@@ -261,11 +253,11 @@ Var:
 
 void yyerror(const char *msg) {
 	char e_string[100];
-    sprintf(e_string, "!!!Error: Line: %d, Col: %d, Symbol: %s, Expected: ", currLine, currCol, yychar);
+    sprintf(e_string, "Error: Line: %d, Col: %d, Symbol: %s, Expected: ", currLine, currCol, yychar);
     strcpy(e_list[COUNT], e_string);
     if(COUNT > 0){
         char temp[100];
-        sprintf(temp, "%s %s !!!\n", e_list[COUNT-1], expected) ; //append last expected rule to last error
+        sprintf(temp, "%s %s \n", e_list[COUNT-1], expected) ; //append last expected rule to last error
         strcpy(e_list[COUNT-1], temp);
     }
     COUNT += 1;
@@ -286,7 +278,7 @@ int main(int argc, char ** argv) {
     //Print errors if they exist.
     if(COUNT){
         char temp[100];
-        sprintf(temp, "%s %s !!!\n", e_list[COUNT], expected); //append expected rule to last error
+        sprintf(temp, "%s %s \n", e_list[COUNT], expected); //append expected rule to last error
         strcpy(e_list[COUNT], temp);
         int i;
         for(i = 0; i <= COUNT; i++){
